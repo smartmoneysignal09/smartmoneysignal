@@ -1,49 +1,17 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>SmartMoneySignal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      max-width: 500px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    p {
-      margin-bottom: 20px;
-      color: #cbd5f5;
-    }
-    input {
-      padding: 12px;
-      width: 100%;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #22c55e;
-      color: black;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; background: #0f172a; color: #e5e7eb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { max-width: 500px; text-align: center; }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    p { margin-bottom: 20px; color: #cbd5f5; }
+    input { padding: 12px; width: 100%; margin-bottom: 10px; border-radius: 6px; border: none; box-sizing: border-box; }
+    button { width: 100%; padding: 12px; background: #22c55e; color: black; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+    #message { margin-top: 15px; display: none; color: #22c55e; }
   </style>
 </head>
 <body>
@@ -52,11 +20,36 @@
     <p>🚧 Project in progress</p>
     <p>Launching <strong>January 3</strong></p>
 
-    <!-- Replace action URL later -->
-    <form>
-      <input type="email" placeholder="Enter your email" required />
-      <button type="submit">Join the waitlist</button>
+    <form name="submit-to-google-sheet">
+      <input name="Email" type="email" placeholder="Enter your email" required />
+      <button type="submit" id="submit-btn">Join the waitlist</button>
     </form>
+    <div id="message">You're on the list! See you Jan 3rd.</div>
   </div>
+
+  <script>
+    // PASTE YOUR GOOGLE SCRIPT URL BELOW
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwANr4RlPCh0SnL24qnrcrIKa5lt4zHVem-8sIwsHdQXzgpzWueR4M4FPgsOp2wWgUySw/exec'
+    const form = document.forms['submit-to-google-sheet']
+    const msg = document.getElementById("message")
+    const btn = document.getElementById("submit-btn")
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      btn.disabled = true
+      btn.innerHTML = "Sending..."
+      
+      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+            msg.style.display = "block"
+            form.style.display = "none"
+        })
+        .catch(error => {
+            btn.disabled = false
+            btn.innerHTML = "Join the waitlist"
+            alert("Error! Please try again.")
+        })
+    })
+  </script>
 </body>
 </html>
